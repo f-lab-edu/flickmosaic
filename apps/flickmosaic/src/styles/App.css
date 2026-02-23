@@ -1,5 +1,22 @@
 @import 'tailwindcss';
 
+@theme {
+  --radius-1: 0.25rem;
+  --radius-2: 0.5rem;
+  --radius-6: 1.5rem;
+
+  --animate-status-spin: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}
+
 @layer base {
   * {
     letter-spacing: -0.5px;

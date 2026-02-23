@@ -32,7 +32,7 @@ const Footer = (): ReactElement => {
 
       {/* 고객센터 및 연락처 정보 */}
       <ul className="mt-6 mx-0 p-0">
-        <li className="text-white/70 list-none mb-1 p-0 tracking-[0] text-medium">
+        <li className="text-white/70 list-none mb-1 p-0 tracking-[0] text-xs">
           <span className="inline-block w-37">고객센터(이용 및 결제 문의)</span>
           <a
             href="mailto:cs@flickmosaic.com"
@@ -42,7 +42,7 @@ const Footer = (): ReactElement => {
           </a>
         </li>
 
-        <li className="text-white/70 list-none mb-1 p-0 tracking-[0] text-medium">
+        <li className="text-white/70 list-none mb-1 p-0 tracking-[0] text-xs">
           <span className="inline-block w-37">광고 문의</span>
           <a
             href="mailto:ad-sales@flickmosaic.com"
@@ -55,7 +55,7 @@ const Footer = (): ReactElement => {
           </span>
         </li>
 
-        <li className="text-white/70 list-none mb-1 p-0 tracking-[0] text-medium">
+        <li className="text-white/70 list-none mb-1 p-0 tracking-[0] text-xs">
           <span className="inline-block w-37">제휴 및 대외 협력</span>
           <a
             href="https://flickmosaic.team/contact"
@@ -73,7 +73,7 @@ const Footer = (): ReactElement => {
           </a>
         </li>
 
-        <li className="text-white/70 list-none mb-1 p-0 tracking-[0] text-medium">
+        <li className="text-white/70 list-none mb-1 p-0 tracking-[0] text-xs">
           <span className="inline-block w-37">B2B 구독권 구매 문의</span>
           <a
             href="mailto:jinu1005@coopnc.com"
@@ -83,7 +83,7 @@ const Footer = (): ReactElement => {
           </a>
         </li>
 
-        <li className="text-white/70 list-none mb-1 p-0 tracking-[0] text-medium">
+        <li className="text-white/70 list-none mb-1 p-0 tracking-[0] text-xs">
           <span className="inline-block w-37">큐레이터</span>
           <a
             href="#"
@@ -96,7 +96,7 @@ const Footer = (): ReactElement => {
 
       {/* 회사 정보 */}
       <div className="mt-[46px] mx-0">
-        <ul className="text-[#84868d] list-none p-0 mx-0 mt-0 mb-1 tracking-[0] text-medium">
+        <ul className="text-[#84868d] list-none p-0 mx-0 mt-0 mb-1 tracking-[0] text-xs">
           <li className="inline-block after:content-[''] after:inline-block after:w-px after:h-2.5 after:mt-[5px] after:mx-1.5 after:mb-0 after:align-top after:bg-white/20">
             주식회사 플릭모자이크
           </li>
@@ -106,14 +106,14 @@ const Footer = (): ReactElement => {
           <li className="inline-block">서울특별시 서초구 강남대로 343 신덕빌딩 3층</li>
         </ul>
 
-        <ul className="text-[#84868d] list-none p-0 mx-0 mt-0 mb-1 tracking-[0] text-medium">
+        <ul className="text-[#84868d] list-none p-0 mx-0 mt-0 mb-1 tracking-[0] text-xs">
           <li className="inline-block after:content-[''] after:inline-block after:w-px after:h-2.5 after:mt-[5px] after:mx-1.5 after:mb-0 after:align-top after:bg-white/20">
             사업자등록번호 211-88-66013
           </li>
           <li className="inline-block">통신판매업 신고번호 제 2019-서울서초-0965호</li>
         </ul>
 
-        <ul className="text-[#84868d] list-none p-0 mx-0 mt-0 mb-1 tracking-[0] text-medium">
+        <ul className="text-[#84868d] list-none p-0 mx-0 mt-0 mb-1 tracking-[0] text-xs">
           <li className="inline-block">호스팅 서비스 제공자 아마존웹서비시즈코리아 유한회사</li>
         </ul>
       </div>
@@ -154,7 +154,7 @@ const Footer = (): ReactElement => {
       </div>
 
       {/* 저작권 정보 */}
-      <div className="text-[#84868d] whitespace-pre-line m-0 p-0 tracking-[0] text-medium">
+      <div className="text-[#84868d] whitespace-pre-line m-0 p-0 tracking-[0] text-xs">
         Copyright © 2025 by FlickMosaic
       </div>
     </footer>
