@@ -35,12 +35,16 @@ const ThemeTab = ({ list }: ThemeTabProps) => {
   };
 
   return (
-    <section className="theme-tab">
-      <ul className="tab-list">
+    <section className="my-6 mx-0">
+      <ul className="flex justify-start py-2.5 px-0 cursor-pointer">
         {list.map((item) => {
           const isActive = activeName === item.name;
           return (
-            <li key={item.name} className={`tab-item${isActive ? ' tab-item-active' : ''}`}>
+            <li
+              key={item.name}
+              data-active={isActive}
+              className="mr-2 [&>button]:py-2 [&>button]:px-4 [&>button]:text-[#84868d] [&>button]:border-[2px] [&>button]:border-[#2e2f31] [&>button]:rounded-6 [&>button]:bg-black [&>button:hover]:cursor-pointer [&>button:hover]:border-[#84868d] [&>button:hover]:border-[2px] [&>button:hover]:transition-all [&>button:hover]:duration-300 [&>button:hover]:ease-[ease] data-[active=true]:[&>button]:text-black data-[active=true]:[&>button]:bg-white data-[active=true]:[&>button:hover]:border-black data-[active=true]:[&>button:hover]:border-2"
+            >
               <Button onClick={() => handleTabClick(item.name)}>{item.name} </Button>
             </li>
           );
