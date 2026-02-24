@@ -8,7 +8,6 @@ import '@orbital0m0/carousel/styles';
 import '@/styles/App.css';
 import '@/styles/Detail.css';
 import '@/styles/Search.css';
-import '@/styles/Skeleton.css';
 
 export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(
