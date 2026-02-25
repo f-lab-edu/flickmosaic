@@ -74,28 +74,36 @@ const SearchHomePageContent = () => {
 
   return (
     <div>
-      <section className="popular-keyword">
-        <div className="popular-keyword-container">
-          <h2>인기 검색어 TOP 10</h2>
-          <div className="popular-keyword-content">
-            <div className="popular-keyword-list">
+      <section className="mb-5">
+        <div className="py-0 px-5">
+          <h2 className="text-2xl font-bold text-white mb-6 tracking-[-0.5px]">인기 검색어 TOP 10</h2>
+          <div className="relative flex overflow-hidden items-start h-97">
+            <div>
               <ThemeTab list={TAB_BUTTONS} />
-              <ul className="trending-list">
+              <ul className="p-0 m-0 grid grid-cols-2 gap-1 max-w-180 relative z-1 flex-1 grid-rows-5 list-none grid-flow-col">
                 {trendingQuery.data?.slice(0, 10).map((movie: any, index: number) => (
                   <li
                     key={movie.id}
-                    className={`trending-item ${index === highlightedIndex ? 'highlighted' : ''}`}
+                    className={`flex items-center cursor-pointer min-h-8 transition-all duration-300 ease-[ease] ${index === highlightedIndex ? 'scale-[1.02]' : ''}`}
                     onMouseEnter={() => handleMouseEnter(index)}
                   >
                     <Link href={`/movie/${movie.id}`}>
-                      <span className="trending-rank">{index + 1}</span>
-                      <span className="trending-title">{movie.title}</span>
+                      <span
+                        className={`inline-flex items-center justify-center w-7 h-7 text-[#f82f62] text-lg leading-6 mr-4 shrink-0 transition-all duration-300 ease-[ease] ${index === highlightedIndex ? 'font-bold' : ''}`}
+                      >
+                        {index + 1}
+                      </span>
+                      <span
+                        className={`text-lg flex-1 leading-6 overflow-hidden whitespace-nowrap text-ellipsis transition-all duration-300 ease-[ease] ${index === highlightedIndex ? 'text-white font-semibold' : 'text-[#84868d]'}`}
+                      >
+                        {movie.title}
+                      </span>
                     </Link>
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="background-img">
+            <div className="absolute top-0 right-0 w-1/2 h-full z-0 [mask-image:linear-gradient(90deg,rgba(0,0,0,0)_0%,rgba(0,0,0,0)_10%,rgba(0,0,0,1)_20%,rgba(0,0,0,1)_100%)] [&_img]:opacity-30 [&_img]:transition-opacity [&_img]:duration-500 [&_img]:ease-[ease]">
               {trendingQuery.data?.[highlightedIndex] && (
                 <Image
                   src={buildImageUrl(trendingQuery.data[highlightedIndex].backdrop_path)}
@@ -109,11 +117,11 @@ const SearchHomePageContent = () => {
           </div>
         </div>
       </section>
-      <section className="category-type">
-        <div className="category-container">
-          <div className="category-header">
+      <section className="mb-10">
+        <div className="py-0 px-5">
+          <div className="mb-5 [&>h2]:text-2xl [&>h2]:text-white [&>h2]:font-bold [&>h2]:mb-2 [&>h2]:tracking-[-0.5px]">
             <h2>장르별 영화</h2>
-            <p className="category-description">원하는 장르를 선택해서 영화를 탐색해보세요</p>
+            <p className="text-sm text-[#84868d] m-0 leading-[1.5]">원하는 장르를 선택해서 영화를 탐색해보세요</p>
           </div>
           <Carousel.Root height={180} articleWidth={319} slides={genresQuery.data ?? []}>
             <Carousel.LeftButton />
