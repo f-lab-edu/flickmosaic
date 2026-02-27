@@ -82,8 +82,8 @@ const DetailPageContent: React.FC = () => {
   // 로딩 상태 처리
   if (!movieData) {
     return (
-      <div className="detail-page">
-        <div className="no-data">
+      <div>
+        <div className="flex flex-col items-center justify-center min-h-100 text-center text-white p-10 [&_h2]:text-2xl [&_h2]:text-white [&_h2]:mb-4 [&_p]:text-base [&_p]:mb-6 [&_p]:text-[#84868d] [&_p]:leading-[1.5] [&_button]:bg-[#f82f62] [&_button]:text-white [&_button]:border-none [&_button]:py-3 [&_button]:px-6 [&_button]:text-sm [&_button]:rounded-1.5 [&_button]:cursor-pointer [&_button]:transition-[background-color] [&_button]:duration-200 [&_button]:ease-[ease] hover:[&_button]:bg-[#d91e4f]">
           <h2>영화 정보를 불러오는 중...</h2>
           <p>잠시만 기다려주세요.</p>
         </div>
@@ -94,8 +94,8 @@ const DetailPageContent: React.FC = () => {
   // 에러 상태 처리
   if (movieData && !movieData.id) {
     return (
-      <div className="detail-page">
-        <div className="no-data">
+      <div>
+        <div className="flex flex-col items-center justify-center min-h-100 text-center text-white p-10 [&_h2]:text-2xl [&_h2]:text-white [&_h2]:mb-4 [&_p]:text-base [&_p]:mb-6 [&_p]:text-[#84868d] [&_p]:leading-[1.5] [&_button]:bg-[#f82f62] [&_button]:text-white [&_button]:border-none [&_button]:py-3 [&_button]:px-6 [&_button]:text-sm [&_button]:rounded-1.5 [&_button]:cursor-pointer [&_button]:transition-[background-color] [&_button]:duration-200 [&_button]:ease-[ease] hover:[&_button]:bg-[#d91e4f]">
           <h2>영화 정보를 찾을 수 없습니다</h2>
           <p>요청하신 영화의 정보가 존재하지 않습니다.</p>
           <button onClick={() => window.history.back()}>이전 페이지로</button>
@@ -109,59 +109,77 @@ const DetailPageContent: React.FC = () => {
       <Head>
         <title>{movieData.title} - FlickMosaic</title>
       </Head>
-      <div className="detail-page">
-        <div className="detail">
-          <div className="detail-header">
-            <section className="detail-info-section">
-              <div className="detail-info">
-                <div className="detail-title">
+      <div>
+        <div className="relative h-[646px] z-2 flex flex-col gap-6 pt-10 mb-8 bg-[linear-gradient(90deg,_rgba(89,89,89,1)_0%,_rgba(0,0,0,1)_45%,_rgba(77,77,77,1)_100%)]">
+          <div className="flex flex-row gap-8 items-start py-0 px-10 h-full">
+            <section className="min-w-[25em] max-w-[37.25em] flex-1 flex flex-col justify-start h-full pt-10">
+              <div className="flex flex-col gap-2.5">
+                <div className="flex flex-col justify-end [&_h1]:text-5xl [&_h1]:font-bold [&_h1]:leading-[1.2] [&_h1]:text-white">
                   <h1>{movieData.title}</h1>
                 </div>
-                <div className="detail-release">
+                <div className="text-white flex flex-row flex-wrap items-center min-h-5.5 gap-1 text-base leading-[22px] tracking-normal [&>span:not(:last-child)]:after:content-['•'] [&>span:not(:last-child)]:after:mx-1 [&_>span:not(:last-child)]:after:text-white/70 [&_>span:not(:last-child)]:after:inline-block">
                   <span>{getReleaseYear(movieData.releaseDate)}</span>
                   {movieData.runtime && <span>{changeTimeFormat(movieData.runtime)}</span>}
                   {movieData.genres.map((genre: Genre) => (
-                    <span key={genre.id} className="detail-genre">
-                      {genre.name}
-                    </span>
+                    <span key={genre.id}>{genre.name}</span>
                   ))}
                 </div>
-                <div className="detail-overview">
+                <div className="text-white text-base leading-[1.5] relative opacity-70 [&_p]:line-clamp-3 [&_p]:overflow-hidden [&_p]:text-ellipsis [&_p]:text-base [&_p]:leading-[22px] [&_p]:tracking-normal">
                   <p>{movieData.overview}</p>
                 </div>
               </div>
-              <div className="detail-rating">
-                <div className="detail-vote-average">
-                  <span className="vote-average-value">{movieData.voteAverage?.toFixed(1) || '0.0'}</span>
-                  <span className="vote-dest">평균 별점</span>
+              <div className="flex items-center min-h-23 justify-start gap-[70px] my-6 mx-0">
+                <div className="flex flex-col">
+                  <span className="text-white text-[34px] leading-[44px] font-semibold">
+                    {movieData.voteAverage?.toFixed(1) || '0.0'}
+                  </span>
+                  <span className="text-white/70 leading-[20px] text-sm">평균 별점</span>
                 </div>
-                <div className="detail-vote-count">
-                  <span className="vote-count-value">{movieData.voteCount?.toLocaleString() || '0'}</span>
-                  <span className="vote-dest">평가 수</span>
+                <div className="flex flex-col">
+                  <span className="text-white text-[34px] leading-[44px] font-semibold">
+                    {movieData.voteCount?.toLocaleString() || '0'}
+                  </span>
+                  <span className="text-white/70 leading-[20px] text-sm">평가 수</span>
                 </div>
               </div>
-              <div className="get-my-list">
-                <div className="purchase-section">
-                  <Button className="purchase-button">구매하기</Button>
-                  <Button className="gift-button">선물하기</Button>
+              <div className="flex flex-col gap-6 justify-end">
+                <div className="flex gap-2.5">
+                  <Button className="text-white bg-[#f82f62] border-none py-2.5 px-10 text-[15px] leading-5 cursor-pointer rounded-1 font-medium hover:bg-[#e02856]">
+                    구매하기
+                  </Button>
+                  <Button className="text-white bg-[#f82f62] border-none py-2.5 px-10 text-[15px] leading-5 cursor-pointer rounded-1 font-medium hover:bg-[#e02856]">
+                    선물하기
+                  </Button>
                 </div>
-                <div className="evaluation-section">
-                  <Button className="evaluation-section-button" icon={<InterestIcon />}>
+                <div className="flex flex-row gap-2.5 justify-start items-stretch">
+                  <Button
+                    className="flex flex-col gap-2 items-center justify-center py-3.5 px-2 bg-black/60 border-0 rounded-1.5 text-white w-30 h-19.5 cursor-pointer text-[13px] transition-[background-color] duration-200 ease-[ease] hover:bg-black/80 [&_p]:m-0 [&_p]:font-normal"
+                    icon={<InterestIcon />}
+                  >
                     <p>보고싶어요</p>
                   </Button>
-                  <Button className="evaluation-section-button" icon={<AssessmentIcon />}>
+                  <Button
+                    className="flex flex-col gap-2 items-center justify-center py-3.5 px-2 bg-black/60 border-0 rounded-1.5 text-white w-30 h-19.5 cursor-pointer text-[13px] transition-[background-color] duration-200 ease-[ease] hover:bg-black/80 [&_p]:m-0 [&_p]:font-normal"
+                    icon={<AssessmentIcon />}
+                  >
                     <p>평가하기</p>
                   </Button>
-                  <Button className="evaluation-section-button" icon={<PartyIcon />}>
+                  <Button
+                    className="flex flex-col gap-2 items-center justify-center py-3.5 px-2 bg-black/60 border-0 rounded-1.5 text-white w-30 h-19.5 cursor-pointer text-[13px] transition-[background-color] duration-200 ease-[ease] hover:bg-black/80 [&_p]:m-0 [&_p]:font-normal"
+                    icon={<PartyIcon />}
+                  >
                     <p>파티</p>
                   </Button>
-                  <Button className="evaluation-section-button" icon={<MoreIcon />}>
+                  <Button
+                    className="flex flex-col gap-2 items-center justify-center py-3.5 px-2 bg-black/60 border-0 rounded-1.5 text-white w-30 h-19.5 cursor-pointer text-[13px] transition-[background-color] duration-200 ease-[ease] hover:bg-black/80 [&_p]:m-0 [&_p]:font-normal"
+                    icon={<MoreIcon />}
+                  >
                     <p>더보기</p>
                   </Button>
                 </div>
               </div>
             </section>
-            <div className="detail-image">
+            <div className="flex-1 relative min-h-[270px] rounded-2 overflow-hidden block mt-10 [&_img]:w-full [&_img]:h-full [&_img]:object-cover [&_img]:block">
               {movieData.backdrop && (
                 <>
                   <Image
@@ -171,8 +189,10 @@ const DetailPageContent: React.FC = () => {
                     height={720}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
-                  <div className="preview-overlay">
-                    <Button className="preview-button">{'미리보기 >'}</Button>
+                  <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-end z-1 h-15">
+                    <Button className="text-white bg-none border-none text-sm cursor-pointer font-medium">
+                      {'미리보기 >'}
+                    </Button>
                   </div>
                 </>
               )}
@@ -183,10 +203,10 @@ const DetailPageContent: React.FC = () => {
         <div>
           {/* 컬렉션 섹션 */}
           <section>
-            <div className="section-title">관련 콘텐츠</div>
+            <div className="relative flex items-end justify-between mb-5 text-xl font-bold text-white">관련 콘텐츠</div>
             {movieData.collection && (
-              <ul className="collection-list">
-                <li className="collection-item">
+              <ul className="relative z-0 h-72 list-none">
+                <li className="w-[12.5%] [&_img]:w-full [&_img]:h-full [&_img]:object-cover [&_img]:border-0 [&_img]:rounded-1">
                   <Image
                     src={buildImageUrl(movieData.collection.poster_path)}
                     alt={movieData.collection.name}
@@ -200,12 +220,15 @@ const DetailPageContent: React.FC = () => {
           </section>
 
           {/* 관련 동영상 섹션 */}
-          <section className="related-video">
-            <div className="section-title">관련 동영상</div>
+          <section className="mt-10 bg-black/90">
+            <div className="relative flex items-end justify-between mb-5 text-xl font-bold text-white">관련 동영상</div>
             {movieData.videos.length > 0 && (
-              <div className="video-section">
+              <div className="grid grid-cols-4 gap-3">
                 {movieData.videos.slice(0, 4).map((video: Video) => (
-                  <div key={video.id} className="video-item">
+                  <div
+                    key={video.id}
+                    className="bg-white/10 rounded-2 p-4 text-white [&_h4]:text-sm [&_h4]:font-medium [&_h4]:mb-2 [&_a]:text-[13px] [&_a]:text-[#f82f62] [&_a]:no-underline"
+                  >
                     <h4>{video.name}</h4>
                     <a
                       href={`https://www.youtube.com/watch?v=${video.key}`}
@@ -222,14 +245,14 @@ const DetailPageContent: React.FC = () => {
           </section>
 
           {/* 감독/출연 섹션 */}
-          <section className="director-cast">
-            <div className="section-title">감독/출연</div>
-            <div className="member-list">
+          <section className="mt-10 bg-black/90">
+            <div className="relative flex items-end justify-between mb-5 text-xl font-bold text-white">감독/출연</div>
+            <div className="grid grid-cols-2 gap-y-5 gap-x-10 mt-5">
               {movieData.member.length > 0 &&
                 movieData.member.slice(0, 10).map((person: Member) => (
-                  <div key={person.id} className="member-item">
-                    <div className="profile">
-                      <div className="profile-image">
+                  <div key={person.id}>
+                    <div className="flex items-center cursor-pointer">
+                      <div className="w-12.5 h-12.5 rounded-full overflow-hidden mr-3 shrink-0 bg-white/10 [&_img]:w-full [&_img]:h-full [&_img]:object-cover [&_img]:border-none">
                         <Image
                           src={buildImageUrl(person.profile_path)}
                           alt={person.name}
@@ -238,9 +261,9 @@ const DetailPageContent: React.FC = () => {
                           style={{ objectFit: 'cover' }}
                         />
                       </div>
-                      <div className="profile-info">
-                        <div className="profile-name">{person.name}</div>
-                        <div className="profile-role">
+                      <div className="flex flex-col">
+                        <div className="text-base leading-[22px] text-white font-medium mb-[2px]">{person.name}</div>
+                        <div className="text-[13px] leading-[18px] text-[#84868d]">
                           {person.job === 'Director' ? '감독' : '배우'}
                           {person.character && ` · ${person.character}`}
                         </div>
@@ -252,14 +275,16 @@ const DetailPageContent: React.FC = () => {
           </section>
 
           {/* 리뷰 섹션 */}
-          <section className="reviews-section">
-            <div className="section-title">플릭모자이크 사용자 평</div>
+          <section className="mt-10 bg-black/90">
+            <div className="relative flex items-end justify-between mb-5 text-xl font-bold text-white">
+              플릭모자이크 사용자 평
+            </div>
             {reviews.length > 0 && (
               <ul>
                 {reviews.map((review: Review) => (
                   <li key={review.id}>
-                    <article className="reviews-item">
-                      <div className="reviewer-icon">
+                    <article className="flex items-start py-2 px-0">
+                      <div className="w-9.5 h-9.5 rounded-full overflow-hidden mr-2.5 shrink-0 bg-[#f82f62] border-none">
                         {review.author_details.avatar_path ? (
                           <Image
                             src={buildImageUrl(review.author_details.avatar_path)}
@@ -272,12 +297,14 @@ const DetailPageContent: React.FC = () => {
                           <div>{''}</div>
                         )}
                       </div>
-                      <div className="review-data">
-                        <div className="reviewer-detail">
-                          <div className="reviewer-name">{review.author}</div>
+                      <div className="flex-1">
+                        <div className="flex items-center">
+                          <div className="mr-1">{review.author}</div>
                           <div>{review.author_details.rating}</div>
                         </div>
-                        <div className="review">{review.content}</div>
+                        <div className="text-[#84868d] text-[15px] leading-[20px] whitespace-pre-wrap max-h-15 overflow-hidden tracking-normal break-all">
+                          {review.content}
+                        </div>
                       </div>
                     </article>
                   </li>

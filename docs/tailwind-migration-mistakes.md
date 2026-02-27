@@ -632,6 +632,130 @@ Tailwind `tracking-tight` = `-0.025em` ≈ `-0.4px` (16px 기준). `-0.5px` lite
 
 ---
 
+---
+
+## [id].tsx (Detail 페이지) 변환 실수 (2026-02-27)
+
+> Detail.css를 [id].tsx에 적용하면서 발생한 오류 모음
+
+---
+
+### D-1. `bg-linear-gradient(...)` — 유효하지 않은 Tailwind 문법
+
+배경 그라디언트를 arbitrary value 형식이 아닌 CSS 함수 그대로 클래스명에 사용한 오류.
+이 클래스는 **전혀 적용되지 않아** 헤더 배경이 투명하게 렌더링된다.
+
+- **파일**: `[id].tsx`
+- **위치**: 히어로 섹션 최상위 div
+- **원본 CSS**: `.detail { background: linear-gradient(90deg, rgba(89,89,89,1) 0%, rgba(0,0,0,1) 45%, rgba(77,77,77,1) 100%); }`
+
+```tsx
+// ❌ 잘못된 코드 — Tailwind 클래스가 아님, 배경 미적용
+<div className="bg-linear-gradient(90deg, rgba(89, 89, 89, 1)_0%, rgba(0, 0, 0, 1)_45%, rgba(77, 77, 77, 1)_100%)">
+
+// ✅ 수정 후 — arbitrary value 형식 + 공백을 _ 로 치환
+<div className="bg-[linear-gradient(90deg,_rgba(89,89,89,1)_0%,_rgba(0,0,0,1)_45%,_rgba(77,77,77,1)_100%)]">
+```
+
+**arbitrary value 배경 그라디언트 작성 규칙:**
+
+- `bg-[...]` 형태로 감싸야 함
+- `[...]` 안 공백은 모두 `_` 로 치환
+- 쉼표(`,`) 는 그대로 유지
+
+---
+
+### D-2. `decoration-none` — 존재하지 않는 Tailwind 클래스
+
+CSS `text-decoration: none`에 해당하는 Tailwind 클래스는 `no-underline`이다.
+`decoration-none`은 Tailwind에 없는 클래스로, 링크 밑줄이 제거되지 않음.
+
+- **파일**: `[id].tsx`
+- **위치**: 관련 동영상 섹션 video item 내 `<a>` 태그
+
+```tsx
+// ❌ 잘못된 코드 — 없는 클래스, 밑줄 제거 안 됨
+<div className="[&_a]:decoration-none">
+
+// ✅ 수정 후
+<div className="[&_a]:no-underline">
+```
+
+| CSS 속성                     | 잘못된 Tailwind        | 올바른 Tailwind |
+| ---------------------------- | ---------------------- | --------------- |
+| `text-decoration: none`      | `decoration-none` ❌   | `no-underline`  |
+| `text-decoration: underline` | `decoration-underline` | `underline`     |
+
+---
+
+### D-3. Dead Class 방치 — `detail-page`, `detail-genre`, `member-item`
+
+원본 CSS에 정의된 적 없는 클래스명을 className에 그대로 남겨둔 경우.
+시각적 영향은 없지만 코드에 의미 없는 클래스가 남아 혼란을 준다.
+
+- **파일**: `[id].tsx`
+
+| 클래스명       | 사용 위치          | 정의 여부               | 처리           |
+| -------------- | ------------------ | ----------------------- | -------------- |
+| `detail-page`  | 최상위 wrapper div | 없음 (원본도 없었음)    | className 제거 |
+| `detail-genre` | 장르 `<span>`      | 없음 (부모 스타일 상속) | className 제거 |
+| `member-item`  | 출연진 item div    | 없음 (원본도 없었음)    | className 제거 |
+
+```tsx
+// ❌ 잘못된 코드 — dead class
+<div className="detail-page">
+<span key={genre.id} className="detail-genre">
+<div key={person.id} className="member-item">
+
+// ✅ 수정 후 — 클래스 제거
+<div>
+<span key={genre.id}>
+<div key={person.id}>
+```
+
+---
+
+### D-4. 높이 값 불일치 — `h-162` vs `h-[646px]`
+
+Tailwind spacing scale 계산 오류로 원본과 2px 차이 발생.
+
+- **파일**: `[id].tsx`
+- **원본 CSS**: `.detail { height: 646px; }`
+
+| 잘못된 코드 | 실제 렌더링       | 올바른 코드 | 렌더링 |
+| ----------- | ----------------- | ----------- | ------ |
+| `h-162`     | 648px (162 × 4px) | `h-[646px]` | 646px  |
+
+> **규칙**: 원본 CSS의 `px` 값이 spacing scale(4px 배수)에 정확히 맞지 않으면 arbitrary value(`h-[646px]`)를 사용한다.
+
+---
+
+### D-5. 그라디언트 중간 stop 누락
+
+원본 CSS의 3단계 그라디언트를 2단계로 변환하여 중간 stop이 사라짐.
+
+- **파일**: `[id].tsx`
+- **위치**: 이미지 프리뷰 오버레이
+- **원본 CSS**: `background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0.4), transparent)`
+
+```tsx
+// ❌ 잘못된 코드 — 2단계 (중간 stop 없음)
+<div className="bg-gradient-to-t from-black/80 to-transparent">
+
+// ✅ 수정 후 — 3단계 (via로 중간 stop 추가)
+<div className="bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+```
+
+**Tailwind 그라디언트 3단계 대응:**
+
+| CSS stop 순서 (to top) | Tailwind         |
+| ---------------------- | ---------------- |
+| 1번째 (from, 하단)     | `from-black/80`  |
+| 2번째 (중간)           | `via-black/40`   |
+| 3번째 (to, 상단)       | `to-transparent` |
+
+---
+
 ## 체크리스트 (다음 전환 시 참고)
 
 - [ ] variant 뒤에 공백 없는지 확인 (`hover: text-*` ❌ → `hover:text-*` ✅)
@@ -656,3 +780,8 @@ Tailwind `tracking-tight` = `-0.025em` ≈ `-0.4px` (16px 기준). `-0.5px` lite
 - [ ] 조건부 스타일이 부모뿐 아니라 **자식 요소에도 모두 적용됐는지** 확인 (`parent.active .child { }` 패턴)
 - [ ] 같은 속성 클래스 중복 없는지 확인 (`h-[350px] h-[345px]` → 하나만)
 - [ ] arbitrary CSS property 문법: `[mask-image:...]`, `[grid-template:...]` 형태로 작성
+- [ ] **배경 그라디언트는 반드시 `bg-[linear-gradient(...)]` — `bg-linear-gradient(...)` 형태는 존재하지 않음**
+- [ ] **`text-decoration: none` → `no-underline` (`decoration-none` 은 없는 클래스)**
+- [ ] **원본 CSS `px` 값이 4의 배수가 아니면 spacing scale 대신 `h-[px값]` arbitrary value 사용**
+- [ ] **그라디언트 stop이 3개 이상이면 `via-` 로 중간 stop 추가**
+- [ ] **CSS 전환 후 dead class(어디에도 정의 없는 클래스명) 전부 제거**
