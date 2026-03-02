@@ -756,6 +756,141 @@ Tailwind spacing scale 계산 오류로 원본과 2px 차이 발생.
 
 ---
 
+---
+
+## MovieCard.tsx 변환 실수 (2026-03-01)
+
+> Carousel.css의 layout별 자식 선택자 패턴(`.slider-card-none .slider-image-container`)을 Tailwind lookup object로 전환하면서 발견한 오류
+
+---
+
+### M-1. `text-{n}` font-size는 4배수 spacing 규칙 미적용
+
+spacing 유틸리티(`p-`, `m-`, `w-`, `h-` 등)는 `n × 4px` 규칙을 따르지만, `text-{n}` font-size는 별도 스케일을 사용한다.
+
+- **파일**: `MovieCard.tsx`
+- **원본 CSS**: `font-size: 48px` (`.slider-content-rank`)
+
+| 잘못된 코드 | 실제 결과                  | 올바른 코드   |
+| ----------- | -------------------------- | ------------- |
+| `text-12`   | 매우 작은 글씨 (48px 아님) | `text-[48px]` |
+
+```tsx
+// ❌ 잘못된 코드 — text-12 ≠ 48px
+<span className="text-12">
+
+// ✅ 수정 후
+<span className="text-[48px]">
+```
+
+> **규칙**: font-size는 `text-sm`, `text-base`, `text-lg` 등 named scale 또는 `text-[px값]` arbitrary value 사용.
+> spacing scale(`n × 4px`)은 font-size에 적용되지 않는다.
+
+---
+
+### M-2. lookup object 패턴에서 base/lookup 속성 중복으로 cascade 충돌
+
+layout마다 값이 다른 속성(w-_, h-_, mb-\* 등)을 base className과 lookup 양쪽에 모두 작성하면 cascade 충돌이 발생한다.
+현재 동작이 맞아 보여도 Tailwind 버전 업데이트 시 stylesheet 선언 순서가 바뀌면 깨진다.
+
+- **파일**: `MovieCard.tsx`
+
+```tsx
+// ❌ 잘못된 코드 — base에 w-full/h-full, lookup에도 w-[86%]/h-[70%]
+<div className={`relative w-full h-full overflow-hidden ${layoutClasses.imageContainer[layout]}`}>
+// imageContainer.left = 'w-[86%] ...' → w-full과 충돌
+// imageContainer.top  = 'h-[70%] ...' → h-full과 충돌
+
+// ❌ 잘못된 코드 — base에 mb-1.5, lookup에 mb-0/mb-1
+<h3 className={`font-bold mb-1.5 ... ${layoutClasses.title[layout]}`}>
+// title.none = 'mb-0 ...' → mb-1.5와 충돌
+// title.top  = 'mb-1 ...' → mb-1.5와 충돌
+```
+
+```tsx
+// ✅ 수정 후 — 충돌하는 속성은 base에서 제거, lookup에서만 정의
+<div className={`relative overflow-hidden min-h-[100px] ${layoutClasses.imageContainer[layout]}`}>
+// imageContainer.none = 'w-full h-full'
+// imageContainer.top  = 'w-full h-[70%] ...'
+// imageContainer.left = 'w-[86%] h-full ...'
+
+<h3 className={`font-bold overflow-hidden whitespace-nowrap text-ellipsis ${layoutClasses.title[layout]}`}>
+// title.none    = 'text-base text-white mb-0 ...'
+// title.overlay = 'text-base text-white mb-1.5 ...'
+// title.top     = 'text-sm text-white mb-1 ...'
+```
+
+> **판단 기준**: "이 속성이 layout마다 다른 값을 갖는가?" → Yes면 lookup 전용으로 이동.
+
+---
+
+### M-3. `group`과 lookup object의 사용 기준 혼동
+
+두 패턴 모두 "부모 상태를 자식에게 전파"하는 것처럼 보이지만 목적이 다르다.
+
+| 상황                                                      | 적합한 방법              |
+| --------------------------------------------------------- | ------------------------ |
+| `hover`, `focus` 등 CSS pseudo-state를 부모→자식으로 전파 | `group` + `group-hover:` |
+| JS prop 값(런타임 고정)에 따라 자식 스타일 분기           | lookup object            |
+
+```tsx
+// group: JS 접근 불가한 CSS 상태 전파 (Carousel.tsx)
+<div className="group">
+  <button className="opacity-0 group-hover:opacity-100">  {/* hover 시 나타남 */}
+
+// lookup object: JS prop이 이미 스코프에 있는 경우 (MovieCard.tsx)
+const layoutClasses = {
+  imageContainer: { none: 'w-full h-full', left: 'w-[86%] h-full', ... }
+}
+<div className={`... ${layoutClasses.imageContainer[props.layout]}`}>
+```
+
+---
+
+### M-4. `content: attr(data-rank)` — 일반 요소에서 무효
+
+CSS의 `content` 속성은 `::before` / `::after` 가상 요소에서만 작동한다. 일반 `<span>`에 적용하면 아무 효과가 없다.
+
+- **파일**: `Carousel.css`
+- **위치**: `.slider-content-rank { content: attr(data-rank); }`
+
+```css
+/* ❌ 무효 — <span>에서 content 속성은 작동하지 않음 */
+.slider-content-rank {
+  content: attr(data-rank);
+}
+```
+
+```tsx
+{
+  /* ✅ 실제로 텍스트를 표시하는 건 JSX 직접 렌더링 */
+}
+<span data-rank={props.slide.rank}>{props.slide.rank}</span>;
+```
+
+> Tailwind 변환 시 이 속성은 변환 대상에서 제외(무시)한다.
+
+---
+
+### M-5. `-webkit-line-clamp` 단독 사용 불가 — 3종 세트 필요
+
+`-webkit-line-clamp`은 단독으로는 작동하지 않는다. 반드시 3가지 속성을 함께 써야 한다.
+
+```tsx
+// ❌ 잘못된 코드 — line-clamp 미작동
+<p className="[-webkit-line-clamp:2]">
+
+// ✅ 방법 1: 3종 세트 arbitrary property
+<p className="[display:-webkit-box] [-webkit-line-clamp:2] [-webkit-box-orient:vertical] overflow-hidden">
+
+// ✅ 방법 2: Tailwind 내장 shorthand (권장, 3종 + overflow 자동 처리)
+<p className="line-clamp-2">
+```
+
+> `line-clamp-{n}`은 Tailwind v3.3+에서 추가된 공식 유틸리티로, 3종 속성과 overflow: hidden을 모두 처리한다.
+
+---
+
 ## 체크리스트 (다음 전환 시 참고)
 
 - [ ] variant 뒤에 공백 없는지 확인 (`hover: text-*` ❌ → `hover:text-*` ✅)
@@ -785,3 +920,8 @@ Tailwind spacing scale 계산 오류로 원본과 2px 차이 발생.
 - [ ] **원본 CSS `px` 값이 4의 배수가 아니면 spacing scale 대신 `h-[px값]` arbitrary value 사용**
 - [ ] **그라디언트 stop이 3개 이상이면 `via-` 로 중간 stop 추가**
 - [ ] **CSS 전환 후 dead class(어디에도 정의 없는 클래스명) 전부 제거**
+- [ ] **`text-{n}` font-size는 4배수 규칙 미적용 → 비표준 크기는 `text-[px값]` arbitrary value 사용**
+- [ ] **lookup object 패턴에서 layout마다 값이 다른 속성(w-_, h-_, mb-\* 등)은 base에서 제거하고 lookup에서만 정의**
+- [ ] **`group`은 hover/focus 등 CSS pseudo-state 전파용. prop 기반 스타일 분기는 lookup object 사용**
+- [ ] **`content: attr(...)` 는 `::before`/`::after` 전용. 일반 요소에서는 dead 속성**
+- [ ] **`-webkit-line-clamp`는 단독 사용 불가. `line-clamp-{n}` shorthand 또는 3종 세트(`[display:-webkit-box] [-webkit-line-clamp:n] [-webkit-box-orient:vertical]`) 사용**

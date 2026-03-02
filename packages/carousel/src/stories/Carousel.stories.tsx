@@ -100,16 +100,55 @@ const renderOverlay = (movie: CarouselProps) => (
 );
 
 const renderTop = (movie: CarouselProps) => (
-  <div className="slider-card-top">
-    <div className="slider-content-top">
+  <div style={{ display: 'flex', flexDirection: 'column', background: '#000', height: '100%' }}>
+    <div
+      style={{
+        flex: 1,
+        padding: '12px',
+        background: '#000',
+        color: 'white',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        borderRadius: '8px 8px 0 0',
+        order: 1,
+      }}
+    >
       {Boolean(movie.rank) && (
         <div style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '8px' }}>{movie.rank}</div>
       )}
-      <div className="slider-title">{movie.title}</div>
-      {movie.description && <div className="slider-description">{movie.description}</div>}
+      <div
+        style={{
+          fontSize: '14px',
+          color: 'white',
+          marginBottom: '4px',
+          fontWeight: 'bold',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        }}
+      >
+        {movie.title}
+      </div>
+      {movie.description && (
+        <div
+          style={{
+            fontSize: '11px',
+            color: '#ccc',
+            opacity: 0.8,
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            lineHeight: 1.4,
+          }}
+        >
+          {movie.description}
+        </div>
+      )}
     </div>
-    <div className="slider-image-container">
-      <img src={movie.image} alt={movie.title} className="slider-image" />
+    <div style={{ height: '70%', borderRadius: '0 0 8px 8px', overflow: 'hidden', order: 2, position: 'relative' }}>
+      <img src={movie.image} alt={movie.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
     </div>
   </div>
 );
