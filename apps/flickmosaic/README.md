@@ -10,12 +10,9 @@
 
 ```bash
 # TMDB API 설정
-VITE_TMDB_API_KEY=your_tmdb_api_key_here
-VITE_TMDB_BASE_URL=https://api.themoviedb.org/3
-VITE_TMDB_IMAGE_URL=https://image.tmdb.org/t/p/w1280
-
-# 앱 설정
-APP_PHASE=local
+NEXT_PUBLIC_TMDB_API_KEY=your_tmdb_api_key_here
+NEXT_PUBLIC_TMDB_BASE_URL=https://api.themoviedb.org/3
+NEXT_PUBLIC_TMDB_IMAGE_URL=https://image.tmdb.org/t/p/w1280
 ```
 
 ### 2. TMDB API 키 발급
@@ -69,7 +66,7 @@ src/
 ├── pages/         # 페이지 컴포넌트
 ├── queries/       # React Query 관련
 ├── stores/        # Zustand 스토어
-├── styles/        # CSS 스타일
+├── styles/        # 글로벌 스타일 (Tailwind CSS v4 설정)
 ├── types/         # TypeScript 타입 정의
 └── utils/         # 유틸리티 함수
 ```

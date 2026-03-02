@@ -49,12 +49,9 @@ pnpm start
 
 ```bash
 # TMDB API 설정
-VITE_TMDB_API_KEY=your_tmdb_api_key_here
-VITE_TMDB_BASE_URL=https://api.themoviedb.org/3
-VITE_TMDB_IMAGE_URL=https://image.tmdb.org/t/p/w1280
-
-# 앱 설정
-APP_PHASE=local
+NEXT_PUBLIC_TMDB_API_KEY=your_tmdb_api_key_here
+NEXT_PUBLIC_TMDB_BASE_URL=https://api.themoviedb.org/3
+NEXT_PUBLIC_TMDB_IMAGE_URL=https://image.tmdb.org/t/p/w1280
 ```
 
 **TMDB API 키 발급 방법:**
@@ -71,8 +68,9 @@ APP_PHASE=local
 
 **주요 기술 스택:**
 
-- **프레임워크**: Next.js 15.5.4
+- **프레임워크**: Next.js 15.5.4 (Pages Router)
 - **UI 라이브러리**: React 19.1.1
+- **스타일링**: Tailwind CSS v4
 - **상태 관리**:
   - Zustand (클라이언트 상태)
   - TanStack Query (서버 상태)
@@ -96,7 +94,7 @@ apps/flickmosaic/src/
 ├── pages/         # Next.js 페이지
 ├── queries/       # TanStack Query 설정
 ├── stores/        # Zustand 스토어
-├── styles/        # CSS 스타일시트
+├── styles/        # 글로벌 스타일 (Tailwind CSS v4 설정)
 ├── types/         # TypeScript 타입 정의
 └── utils/         # 유틸리티 함수
 ```
@@ -140,6 +138,7 @@ pnpm build
 - React 19 기반 Carousel 컴포넌트
 - TypeScript 지원
 - Compound Component 패턴
+- Tailwind CSS 기반 스타일링
 - Storybook 문서화
 
 **설치:**
@@ -156,10 +155,14 @@ import "@orbital0m0/carousel/styles";
 
 function App() {
   return (
-    <Carousel.Root>
-      <Carousel.Item>{/* 내용 */}</Carousel.Item>
-      <Carousel.Item>{/* 내용 */}</Carousel.Item>
-      <Carousel.Item>{/* 내용 */}</Carousel.Item>
+    <Carousel.Root height={400} articleWidth={200} slides={data}>
+      <Carousel.LeftButton />
+      <Carousel.Track articleWidth={200}>
+        <Carousel.Article articleWidth={200} layout="overlay">
+          {(item) => <div>{item.title}</div>}
+        </Carousel.Article>
+      </Carousel.Track>
+      <Carousel.RightButton />
     </Carousel.Root>
   );
 }
@@ -251,11 +254,11 @@ pnpm --F @orbital0m0/carousel build
 **필요한 GitHub Secrets:**
 
 ```
-VITE_TMDB_API_KEY           # TMDB API 키
+NEXT_PUBLIC_TMDB_API_KEY    # TMDB API 키
 AWS_ACCESS_KEY_ID           # AWS 액세스 키
 AWS_SECRET_ACCESS_KEY       # AWS 시크릿 키
 AWS_REGION                  # AWS 리전
-S3_BUCKET_NAME             # S3 버킷 이름
+S3_BUCKET_NAME              # S3 버킷 이름
 CLOUDFRONT_DISTRIBUTION_ID  # CloudFront 배포 ID
 ```
 
