@@ -22,7 +22,7 @@ const Header: React.FC = () => {
 
           <div className="flex flex-1 min-w-0">
             <ul className="flex items-center">
-              <li className="header-nav-item">
+              <li>
                 <a
                   data-active={pathname === '/'}
                   className="group text-[#84868d] transition whitespace-nowrap hover:text-white data-[active=true]:font-semibold data-[active=true]:text-white data-[active=true]:hover:text-[#84868d] tracking-[0] m-0 p-0 text-4 leading-5.5"
@@ -33,7 +33,7 @@ const Header: React.FC = () => {
                   </span>
                 </a>
               </li>
-              <li className="header-nav-item">
+              <li>
                 <a
                   data-active={pathname === '/purchase'}
                   className="group text-[#84868d] transition whitespace-nowrap hover:text-white data-[active=true]:font-semibold data-[active=true]:text-white data-[active=true]:hover:text-[#84868d] tracking-[0] m-0 p-0 text-4 leading-5.5"
@@ -44,7 +44,7 @@ const Header: React.FC = () => {
                   </span>
                 </a>
               </li>
-              <li className="header-nav-item">
+              <li>
                 <a
                   data-active={pathname === '/webtoon'}
                   className="group text-[#84868d] transition whitespace-nowrap hover:text-white data-[active=true]:font-semibold data-[active=true]:text-white data-[active=true]:hover:text-[#84868d] tracking-[0] m-0 p-0 text-4 leading-5.5"
@@ -55,7 +55,7 @@ const Header: React.FC = () => {
                   </span>
                 </a>
               </li>
-              <li className="header-nav-item">
+              <li>
                 <a
                   data-active={pathname === '/party'}
                   className="group text-[#84868d] transition whitespace-nowrap hover:text-white data-[active=true]:font-semibold data-[active=true]:text-white data-[active=true]:hover:text-[#84868d] tracking-[0] m-0 p-0 text-4 leading-5.5"

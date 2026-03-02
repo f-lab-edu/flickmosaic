@@ -3,8 +3,6 @@ import React, { createContext, useContext } from 'react';
 import Button from './Button';
 import useCarousel from '../hooks/useCarousel';
 import { CarouselContextType, RootProps, TrackProps, ArticleProps } from '../types/Carousel';
-import '../styles/Carousel.css';
-
 const CarouselContext = createContext<CarouselContextType | undefined>(undefined);
 
 const useCarouselContext = (): CarouselContextType => {
@@ -88,7 +86,7 @@ const Article: React.FC<ArticleProps> = ({ articleWidth, layout = 'overlay', chi
       {clonedSlides.map((slide, index) => (
         <article
           key={`${slide.id}-${index}`}
-          className={`flex-none h-full max-h-full p-2 box-border cursor-pointer min-h-50 flex flex-col overflow-hidden [&_a]:h-full [&_a]:max-h-full [&_a]:w-full [&_a]:max-w-full [&_a]:block [&_a]:overflow-hidden slider-article-${layout}`}
+          className="flex-none h-full max-h-full p-2 box-border cursor-pointer min-h-50 flex flex-col overflow-hidden [&_a]:h-full [&_a]:max-h-full [&_a]:w-full [&_a]:max-w-full [&_a]:block [&_a]:overflow-hidden"
           style={{ width: `${articleWidth}px` }}
           onTransitionEnd={handleTransitionEnd}
         >
